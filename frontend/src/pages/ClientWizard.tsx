@@ -31,7 +31,7 @@ export default function ClientWizard() {
             <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-rose-200 -z-10 -translate-y-1/2" />
             {[
               { num: 1, icon: Scissors, label: 'Serviço' },
-              { num: 2, icon: Sparkles, label: 'Estilo' },
+              { num: 2, icon: Sparkles, label: 'Profissional' },
               { num: 3, icon: Clock, label: 'Horário' },
               { num: 4, icon: CreditCard, label: 'Checkout' }
             ].map((s) => (
@@ -157,8 +157,9 @@ export default function ClientWizard() {
                   </button>
                 ))}
               </div>
-              <div className="pt-4 text-center mt-auto">
-                <button onClick={() => setStep(2)} className="px-6 py-2 text-sm font-semibold text-neutral-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-all">Modificar</button>
+              <div className="pt-4 flex justify-between items-center mt-auto px-2">
+                <button onClick={() => setStep(2)} className="px-5 py-2 text-sm font-semibold text-neutral-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-all">Voltar</button>
+                <button onClick={() => setStep(2)} className="px-5 py-2 text-sm font-semibold text-neutral-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-all">Modificar</button>
               </div>
             </div>
           )}
@@ -177,12 +178,17 @@ export default function ClientWizard() {
 
               <div className="space-y-2 mb-6">
                  <p className="text-sm font-bold text-neutral-800 mb-2 ml-1">Método de pagamento:</p>
-                 <div className="grid grid-cols-2 gap-3">
-                   <button onClick={() => setPaymentMethod('pix')} className={`p-4 rounded-2xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${paymentMethod === 'pix' ? 'border-rose-500 bg-rose-50 text-rose-600 shadow-sm' : 'border-neutral-100 bg-white text-neutral-500 hover:border-rose-300'}`}>
-                      <CheckCircle2 size={24} className={paymentMethod === 'pix' ? 'text-rose-500' : 'text-neutral-300'}/> PIX
-                   </button>
-                   <button onClick={() => setPaymentMethod('card')} className={`p-4 rounded-2xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${paymentMethod === 'card' ? 'border-rose-500 bg-rose-50 text-rose-600 shadow-sm' : 'border-neutral-100 bg-white text-neutral-500 hover:border-rose-300'}`}>
-                      <CreditCard size={24} className={paymentMethod === 'card' ? 'text-rose-500' : 'text-neutral-300'}/> Cartão
+                 <div className="grid grid-cols-1 gap-3">
+                   <div className="grid grid-cols-2 gap-3">
+                     <button onClick={() => setPaymentMethod('pix')} className={`p-4 rounded-2xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${paymentMethod === 'pix' ? 'border-rose-500 bg-rose-50 text-rose-600 shadow-sm' : 'border-neutral-100 bg-white text-neutral-500 hover:border-rose-300'}`}>
+                        <CheckCircle2 size={24} className={paymentMethod === 'pix' ? 'text-rose-500' : 'text-neutral-300'}/> PIX
+                     </button>
+                     <button onClick={() => setPaymentMethod('card')} className={`p-4 rounded-2xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${paymentMethod === 'card' ? 'border-rose-500 bg-rose-50 text-rose-600 shadow-sm' : 'border-neutral-100 bg-white text-neutral-500 hover:border-rose-300'}`}>
+                        <CreditCard size={24} className={paymentMethod === 'card' ? 'text-rose-500' : 'text-neutral-300'}/> Cartão
+                     </button>
+                   </div>
+                   <button onClick={() => setPaymentMethod('local')} className={`p-4 rounded-2xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${paymentMethod === 'local' ? 'border-rose-500 bg-rose-50 text-rose-600 shadow-sm' : 'border-neutral-100 bg-white text-neutral-500 hover:border-rose-300'}`}>
+                      <MapPin size={24} className={paymentMethod === 'local' ? 'text-rose-500' : 'text-neutral-300'}/> Pagar no Salão
                    </button>
                  </div>
               </div>
