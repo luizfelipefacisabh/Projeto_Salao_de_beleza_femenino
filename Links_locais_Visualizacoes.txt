@@ -1,0 +1,5 @@
+http://localhost:5173/master -- MASTER
+
+http://localhost:5173/admin -- ADM DO SALAO
+
+http://localhost:5173/book -- USUARIO FINAL

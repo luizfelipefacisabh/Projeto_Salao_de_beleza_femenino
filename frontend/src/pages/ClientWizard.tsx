@@ -1,15 +1,73 @@
-import React from 'react';
-import { Sparkles, Scissors, Clock, CreditCard, MessageCircle, CheckCircle2, MapPin, Star } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sparkles, Scissors, Clock, CreditCard, MessageCircle, CheckCircle2, MapPin, Star, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+
+interface Salon { id: string; name: string; description: string; address: string; phone: string; }
+interface Service { id: string; name: string; description: string; price: number; duration_minutes: number; }
+interface Professional { id: string; name: string; role_title: string; avatar_url: string; }
 
 export default function ClientWizard() {
-  const [step, setStep] = React.useState(0);
-  const [paymentMethod, setPaymentMethod] = React.useState('pix');
+  const [step, setStep] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState('pix');
+  const [loading, setLoading] = useState(true);
 
-  const handleWhatsAppCheckout = () => {
-    const text = encodeURIComponent('Olá! Gostaria de confirmar meu agendamento na Maison Privé para Balayage com a Mariana às 09:00. Paguei via PIX!');
-    window.open(`https://wa.me/5511999999999?text=${text}`, '_blank');
+  // States vindo do Supabase
+  const [salon, setSalon] = useState<Salon | null>(null);
+  const [services, setServices] = useState<Service[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+
+  // Seleções do fluxo
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string>('09:00');
+
+  const SALON_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'; // ID do Seed
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [salonRes, servicesRes, profRes] = await Promise.all([
+          supabase.from('salons').select('*').eq('id', SALON_ID).single(),
+          supabase.from('services').select('*').eq('salon_id', SALON_ID),
+          supabase.from('professionals').select('*').eq('salon_id', SALON_ID)
+        ]);
+        
+        if (salonRes.data) setSalon(salonRes.data);
+        if (servicesRes.data) setServices(servicesRes.data);
+        if (profRes.data) setProfessionals(profRes.data);
+      } catch (err) {
+        console.error("Erro ao carregar dados do Supabase:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const handleWhatsAppCheckout = async () => {
+    // Registra o agendamento no Supabase (Sem client_id por enquanto)
+    if (selectedService && selectedProfessional) {
+        try {
+           await supabase.from('appointments').insert({
+             salon_id: SALON_ID,
+             professional_id: selectedProfessional.id,
+             service_id: selectedService.id,
+             appointment_time: new Date().toISOString(), // Mock de data
+             payment_method: paymentMethod === 'local' ? 'local_store' : (paymentMethod === 'pix' ? 'pix_app' : 'card_app'),
+             appointment_status: 'scheduled'
+           });
+        } catch(e) { console.error('Erro ao salvar no banco', e); }
+    }
+
+    const text = encodeURIComponent(`Olá! Gostaria de confirmar meu agendamento na ${salon?.name} para ${selectedService?.name} com a ${selectedProfessional?.name} (Horário: ${selectedTime}). Escolhi o pagamento via: ${paymentMethod === 'local' ? 'Local / Direto no Salão' : paymentMethod.toUpperCase()}.`);
+    const phone = salon?.phone?.replace(/\D/g, '') || '5511999999999';
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
   };
+
+  if (loading) {
+     return <div className="min-h-screen bg-rose-50 flex flex-col items-center justify-center gap-4"><Loader2 className="animate-spin text-rose-500" size={48} /><p className="text-rose-500 font-bold animate-pulse">Conectando ao Supabase...</p></div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-rose-100 flex flex-col items-center justify-center px-4 py-8 relative overflow-hidden">
@@ -20,7 +78,7 @@ export default function ClientWizard() {
         {step > 0 && (
            <header className="mb-6 text-center">
              <h1 className="text-4xl font-light tracking-tight text-neutral-800 mb-2 mt-4">
-               Maison <span className="font-semibold text-rose-500">Privé</span>
+               {salon?.name?.split(' ')[0]} <span className="font-semibold text-rose-500">{salon?.name?.split(' ')[1]}</span>
              </h1>
              <p className="text-rose-400 text-sm font-medium">Sua experiência premium</p>
            </header>
@@ -59,22 +117,18 @@ export default function ClientWizard() {
                </div>
                
                <div>
-                  <h2 className="text-3xl font-bold text-neutral-800 mb-2">Maison <span className="text-rose-500">Privé</span></h2>
+                  <h2 className="text-3xl font-bold text-neutral-800 mb-2">{salon?.name || 'Maison Privé'}</h2>
                   <div className="flex items-center justify-center gap-1 text-amber-400 mb-4">
                      <Star size={16} className="fill-current" /><Star size={16} className="fill-current" /><Star size={16} className="fill-current" /><Star size={16} className="fill-current" /><Star size={16} className="fill-current" />
-                     <span className="text-sm font-bold text-neutral-600 ml-1">(4.9/5)</span>
+                     <span className="text-sm font-bold text-neutral-600 ml-1">(5.0/5)</span>
                   </div>
                   <p className="text-neutral-500 font-medium text-[15px] leading-relaxed mb-6">
-                    Seu espaço premium em São Paulo. Especialistas em mechas balayage, coloração avançada e cuidados de alto padrão para unhas e estética.
+                    {salon?.description || 'Seu salão premium carregando informações...'}
                   </p>
                   
                   <div className="bg-rose-50/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 border border-rose-100/50">
                      <div className="flex items-center gap-2 text-sm text-neutral-600 font-semibold">
-                        <MapPin size={16} className="text-rose-500"/> Jardins, SP
-                     </div>
-                     <div className="flex justify-center gap-2 text-xs font-bold text-emerald-600">
-                        <span className="bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aberto Agora</span>
-                        <span className="bg-neutral-50 px-3 py-1 rounded-full border border-neutral-200 text-neutral-500">Seg a Sáb, 8h às 20h</span>
+                        <MapPin size={16} className="text-rose-500"/> {salon?.address || 'Brasil'}
                      </div>
                   </div>
                </div>
@@ -97,17 +151,17 @@ export default function ClientWizard() {
               </div>
               
               <div className="space-y-3 flex-1 overflow-y-auto pr-2">
-                {['Balayage & Coloração', 'Corte Premium', 'Manicure & Pedicure', 'Design de Sobrancelha'].map((service) => (
+                {services.map((service) => (
                   <button 
-                    key={service}
-                    onClick={() => setStep(2)}
+                    key={service.id}
+                    onClick={() => { setSelectedService(service); setStep(2); }}
                     className="w-full text-left p-4 rounded-2xl bg-white hover:bg-rose-50 border border-neutral-100 hover:border-rose-300 transition-all group flex justify-between items-start shadow-sm hover:shadow-md"
                   >
                     <div>
-                      <span className="block text-neutral-800 font-bold group-hover:text-rose-600 transition-colors mb-1">{service}</span>
-                      <span className="text-xs text-neutral-500 font-medium line-clamp-2">Tratamento completo com hidratação e proteção térmica, garantindo o melhor design para você.</span>
+                      <span className="block text-neutral-800 font-bold group-hover:text-rose-600 transition-colors mb-1">{service.name}</span>
+                      <span className="text-xs text-neutral-500 font-medium line-clamp-2">{service.description}</span>
                     </div>
-                    <span className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap mt-1">R$ 150+</span>
+                    <span className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap mt-1">R$ {service.price}</span>
                   </button>
                 ))}
               </div>
@@ -121,18 +175,18 @@ export default function ClientWizard() {
             <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-500 h-full flex flex-col">
               <h2 className="text-xl font-semibold text-neutral-800 mb-6 text-center">Sua Profissional</h2>
               <div className="space-y-3 flex-1">
-                {['Mariana Luz', 'Camila P.'].map((stylist) => (
+                {professionals.map((prof) => (
                   <button 
-                    key={stylist}
-                    onClick={() => setStep(3)}
+                    key={prof.id}
+                    onClick={() => { setSelectedProfessional(prof); setStep(3); }}
                     className="w-full text-left p-4 rounded-2xl bg-white hover:bg-rose-50 border border-neutral-100 hover:border-rose-300 transition-all flex items-center gap-4 group shadow-sm hover:shadow-md"
                   >
                     <div className="w-14 h-14 rounded-full bg-rose-100 overflow-hidden flex-shrink-0 relative group-hover:ring-4 ring-rose-200 transition-all shadow-inner">
-                      <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${stylist}&backgroundColor=fce7f3`} alt="avatar" className="w-full h-full object-cover" />
+                      <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${prof.name}&backgroundColor=fce7f3`} alt="avatar" className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1">
-                      <span className="block text-neutral-800 font-bold text-lg group-hover:text-rose-600 transition-colors">{stylist}</span>
-                      <span className="text-sm text-neutral-500 font-medium">Especialista Ouro</span>
+                      <span className="block text-neutral-800 font-bold text-lg group-hover:text-rose-600 transition-colors">{prof.name}</span>
+                      <span className="text-sm text-neutral-500 font-medium">{prof.role_title}</span>
                     </div>
                   </button>
                 ))}
@@ -150,7 +204,7 @@ export default function ClientWizard() {
                 {['09:00', '10:30', '14:00', '16:30'].map((time) => (
                   <button 
                     key={time}
-                    onClick={() => setStep(4)}
+                    onClick={() => { setSelectedTime(time); setStep(4); }}
                     className="p-4 text-center rounded-2xl bg-white hover:bg-rose-500 hover:text-white border border-neutral-100 hover:border-rose-500 transition-all font-bold text-[15px] text-neutral-700 shadow-sm hover:shadow-md active:translate-y-0"
                   >
                     {time}
@@ -169,11 +223,11 @@ export default function ClientWizard() {
               <h2 className="text-xl font-semibold text-neutral-800 mb-2 text-center">Checkout</h2>
               
               <div className="bg-rose-50 rounded-2xl p-4 mb-4 border border-rose-100">
-                <p className="flex justify-between text-sm text-neutral-600 mb-1 font-medium"><span>Serviço:</span> <span className="font-bold text-neutral-800">Balayage & Coloração</span></p>
-                <p className="flex justify-between text-sm text-neutral-600 mb-1 font-medium"><span>Especialista:</span> <span className="font-bold text-neutral-800">Mariana Luz</span></p>
-                <p className="flex justify-between text-sm text-neutral-600 mb-3 font-medium"><span>Data/Hora:</span> <span className="font-bold text-neutral-800">Hoje às 09:00</span></p>
+                <p className="flex justify-between text-sm text-neutral-600 mb-1 font-medium"><span>Serviço:</span> <span className="font-bold text-neutral-800">{selectedService?.name}</span></p>
+                <p className="flex justify-between text-sm text-neutral-600 mb-1 font-medium"><span>Especialista:</span> <span className="font-bold text-neutral-800">{selectedProfessional?.name}</span></p>
+                <p className="flex justify-between text-sm text-neutral-600 mb-3 font-medium"><span>Data/Hora:</span> <span className="font-bold text-neutral-800">Hoje às {selectedTime}</span></p>
                 <hr className="border-rose-200/60 mb-3"/>
-                <p className="flex justify-between text-base font-semibold text-rose-500 uppercase tracking-widest"><span>Total:</span> <span className="font-extrabold text-2xl">R$ 290</span></p>
+                <p className="flex justify-between text-base font-semibold text-rose-500 uppercase tracking-widest"><span>Total:</span> <span className="font-extrabold text-2xl">R$ {selectedService?.price}</span></p>
               </div>
 
               <div className="space-y-2 mb-6">
