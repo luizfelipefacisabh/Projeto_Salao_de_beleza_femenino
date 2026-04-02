@@ -1,0 +1,80 @@
+Product Requirements Document (PRD) - Agendamento Barbearia Premium
+Contexto para IA: Este documento descreve um sistema de agendamento para barbearias. O objetivo é gerar uma aplicação web completa (Next.js + Tailwind CSS + Supabase/Mock) com foco em alta conversão e design premium. Use este PRD como fonte da verdade para gerar o código.
+
+1. Visão Geral do Produto
+Uma aplicação web responsiva (Mobile-First) que serve dois públicos:
+
+Administrador (Dono): Gerencia a agenda, profissionais, serviços e visualiza métricas.
+Cliente (Final): Agenda horários via link compartilhado (WhatsApp) sem fricção.
+Core Value Proposition: Agendamento ultra-rápido para o cliente e gestão sem dor de cabeça para o dono.
+
+2. Atores e Permissões
+A. Cliente (Usuário Final)
+Acesso: Via link público (ex: app.barbearia.com).
+Autenticação: Simplificada via Número de Telefone (sem senha).
+Funcionalidades:
+Visualizar serviços e preços.
+Escolher barbeiro (opcional).
+Selecionar horário disponível.
+Agendar e receber confirmação.
+Ver histórico e saldo de fidelidade.
+B. Administrador (Dono)
+Acesso: Rota /admin ou botão de login na home.
+Autenticação: E-mail e Senha (com recuperação de senha "Esqueci minha senha").
+Funcionalidades:
+CRUD de Barbeiros (Nome, Foto, Especialidade).
+CRUD de Serviços (Nome, Preço, Duração).
+Gestão de Bloqueios: Bloquear horários na agenda (almoço, folgas).
+Dashboard: Visualizar agendamentos do dia/semana.
+Envio de msg WhatsApp: Sistema gera link wa.me para contatar cliente.
+3. Fluxos de Usuário (User Flows)
+Fluxo 1: Agendamento do Cliente (Wizard Linear)
+O objetivo é "segurar na mão do cliente" para evitar erros.
+
+Passo 1: Serviços: Grid com cards (Corte, Barba, etc).
+Passo 2: Barbeiro (Opcional): "Prefere alguém?" -> Lista de profisionais ou "Qualquer um".
+Passo 3: Data e Hora: Calendário + Lista de slots livres. Filtra horários baseado na duração do serviço escolhido.
+Passo 4: Identificação: Input de Nome e Telefone.
+Passo 5: Conclusão: Tela de sucesso com resumo + Botão "Adicionar ao Calendário".
+Fluxo 2: Gestão do Admin
+Login: Tela clean com Email/Senha.
+Dashboard: Visão de calendário (Dia/Semana).
+Ações Rápidas: Botão flutuante (+) para "Novo Agendamento Manual" ou "Novo Bloqueio".
+4. Design System & UI (Instruções Visuais)
+Estilo Visual: "Premium Moderno"
+
+Tema: Dark Mode predominante.
+Cores:
+Background: bg-slate-950 (Quase preto, azulado profundo).
+Surface: bg-slate-900 (Cards e modais).
+Primary (Ação): text-amber-500 / bg-amber-500 (Dourado/Gold premium) para botões principais.
+Text: text-slate-100 (Branco suave) e text-slate-400 (Secundário).
+Tipografia: Sans-serif limpa (Inter ou Outfit).
+Componentes: Bordas arredondadas (rounded-xl), sombras sutis (shadow-lg), efeitos de vidro (backdrop-blur).
+5. Requisitos Funcionais Detalhados
+Integração WhatsApp:
+
+As notificações NÃO são SMS automáticos (custo alto).
+O sistema deve gerar links wa.me/55SEUNUMERO?text=Ola... para o Admin clicar e enviar confirmação manual, OU usar API do WhatsApp se configurado (futuro).
+Regra: A comunicação no WhatsApp 'sai' do número do administrador.
+Fidelidade:
+
+Regra: A cada 10 agendamentos status=concluido, ganha 1 grátis. 
+Ter opção para o administrador colocar mais serviços  de fidelidade - opção de não ter programa de fidelidade
+Visual: Barra de progresso na home do cliente.
+Recuperação de Senha (Admin):
+
+Link "Esqueci a senha" no login.
+Envia e-mail com link de reset (usar Supabase Auth ou Firebase Auth built-in features).
+6. Stack Tecnológica Sugerida para IA
+Frontend: Next.js 14+ (App Router).
+Styling: Tailwind CSS + Lucide Icons.
+Components: Shadcn/ui (altamente recomendado para velocidade e beleza).
+Backend/Auth: Supabase (Postgres + Auth).
+State Management: React Query (Tanstack Query).
+7. Prompt Inicial para Gerar o App (Copie e Cole)
+Atue como um Engenheiro de Software Sênior. Crie uma aplicação de agendamento para barbearia baseada no PRD anexo.
+Stack: Next.js, Tailwind, Shadcn/ui, Supabase.
+Design: Dark mode premium (Slate-950 + Amber-500).
+Funcionalidade crítica: Fluxo de agendamento linear (Wizard) e Login simplificado p/ clientes (apenas telefone).
+Comece criando a estrutura do banco de dados e as telas de Login e Agendamento.

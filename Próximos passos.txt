@@ -1,0 +1,11 @@
+Acesse sua conta no GitHub: https://github.com/new
+No campo Repository name, digite salao-beleza-app
+Certifique-se de que a opção Add a README file esteja DESMARCADA (importante!).
+Clique no botão verde Create repository.
+Passo 2: Fazer o Upload da Pasta
+Na tela nova que abrir, procure o link azul escrito: "uploading an existing file" (fica logo abaixo da seção "…or create a new repository on the command line"). Clique nele.
+Na tela de upload, abra a pasta onde está o projeto no seu computador: C:\Users\Felipe\Downloads\premium-barber-booking-main\
+Arraste e solte todos os arquivos de dentro da pasta salao-beleza-app (como as pastas src, public e os arquivos .json, .tsx) para dentro do quadro no navegador.
+Aguarde o carregamento de todos os arquivos.
+Quando terminar de carregar, role a página até o botão verde Commit changes e clique nele para salvar tudo no GitHub.
+Dica: O upload pelo navegador funciona perfeitamente, porém o GitHub via web tem um limite de 100 arquivos por vez. Se a sua pasta tiver mais do que isso (por exemplo, a pasta node_modules tem milhares de arquivos), NÃO arraste a pasta node_modules. Ela não precisa (e nem deve) ir para o GitHub. Apenas os arquivos do seu código!

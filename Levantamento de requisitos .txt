@@ -1,0 +1,92 @@
+Crie em documento PRD para o desenvolvimento da minha aplicação/site com as informações abaixo:
+
+Documento de Planejamento - Site/Aplicativo para salão feminino (manicure, cilicos,sombrancelhas,cabelos) e deve contem a opção de agendamento por ele
+Este documento descreve o plano de desenvolvimento para o site de Site/Aplicativo para salão feminino (manicure, cabelos) e deve contem a opção de agendamento, focado em uma experiência premium para o cliente e ferramentas de gerenciamento para o administrador.
+
+Visão Geral
+O objetivo é criar uma aplicação web responsiva (mobile-first) que permita agendamentos rápidos via link (WhatsApp) e gestão simples para o dono do salão.
+
+Perfis de Usuário
+Administrador master do sistema: Acesso total, pode inserir ou remover salões, deve conter uma interface onde ele consiga acessar o banco de dados pela tela, para consultar as informações e alterar por ela, por exemplo: reset de uma senha de um administrador do salão.
+Na tela do super admin deve conter os menus:
+Menu Dasboard: (Controle de total de salões, assinaturas ativas, suspensas, meu faturamento)
+Menu Novo salão: ( menu que deve ter as informações para o cadastro de um novo salão
+Nome
+Site (caso tenha)
+Descrição
+telefone
+WhatsApp
+Endereço
+Dados do administrador: Nome, email, senha, telefone.
+Menu Salões: Visualização de todos os salões cadastrados
+Menu Assinaturas: opção onde terá o controle de assinatura e pagamentos, os salões vão poder cadastrar o metódo de pagamento e nesse menu eu como administrador irei controlar.
+
+Administrador (Dono do salão): Acesso total. Pode editar informações (salão, serviços), visualizar todos os agendamentos e gerenciar o histórico. 
+Na tela do admin (dono do salao) deve conter os menus:
+Menu Agenda:  Controle de agenda, dias e horarios diosponiveis, nesse menu o adm pode ter a opção de travar um horário.
+Menu Profissionais: o adm vai pode inserir, remover ou editar profissionais, os profissionais inseridos deve conter fotos e uma pequena descrição da sua especialidade.
+
+Menu serviços: o adm vai pode inserir, remover ou editar serviços, os serviços devem conter um valor e uma breve descrição.
+
+Menu galeria: o adm vai pode inserir ou remover imagens, os trabalhos dos profissionais
+
+Menu faturamento: Esse menu deve ser opcional, se o adm vai querer ter ou não.
+o adm vai pode inserir, remover ou editar lançamentos
+Nesse menu deve conter as opções de informar o lançamento: profissional, data, valor e observações
+Nesse menu deve conter opção para visualizar os lançamentos por períodos, apresentação de graficos, utilizar ia para apontar os meses que mais faturou e que menos faturou e sugerir estrategias para aumentar seu lucro.
+
+Menu fidelidade: o adm vai pode inserir, remover ou editar lançamentos. Esse menu deve ser opcional, se o adm vai querer ter ou não.
+Nesse menu deve conter as informações de total de clientes, clientyes aptos para resgate, total de pontos, o admi deve ter a opção para controlar como deve ser o controle de fidelidade.
+
+Menu de configuração:
+Nesse menu deve conter as opções de configurações do salão:
+Link de agendamento
+Informações do salao
+Controle de visualização dos menus
+Opção de configuração junto ao WhatsAPP, conter todas as configurações necessarias para integração junto ao WhatsApp.
+
+
+
+Cliente: Acesso via link. Pode visualizar disponibilidade, realizar agendamentos, ver portifolho do salão, ver seu histórico e saldo de fidelidade.
+
+Estrutura das Telas
+1. Tela de Login / Identificação
+Objetivo: Identificar o usuário com a menor fricção possível.
+Melhoria Sugerida (Expert):
+Para Clientes: Eliminar senha. Usar apenas Número de Telefone (com envio de código OTP via WhatsApp/SMS se possível, ou apenas cadastro simplificado inicial). Isso aumenta drasticamente a conversão.
+Para Admin: E-mail e Senha robusta.
+
+Funcionalidades Adicionais:
+Link "Esqueci minha senha": Modal ou redirecionamento para recuperação de senha (essencial para Admin). Envio de link de redefinição por e-mail.
+
+2. Tela de Agendamento (Fluxo Otimizado)
+Objetivo: Guiar o cliente até a conversão sem dúvidas.
+Problema da ideia original: Botões soltos podem confundir a ordem.
+Solução (Expert): Fluxo Linear (Wizard).
+Serviço Primeiro: O cliente escolhe o que quer fazer (Corte, Barba, Combo). O preço e tempo variam aqui.
+Barbeiro: (Opcional) "Qualquer um" ou um específico. Se escolher serviço antes, filtra quem faz aquele serviço.
+Data e Hora: Mostra apenas o que está livre para aquele serviço com aquele profissional.
+Confirmação: Resumo e botão final.
+3. Tela de Histórico e Fidelidade
+Objetivo: Retenção.
+Melhorias:
+Barra de Progresso Visual: "Faltam 3 cortes para o seu prêmio!"
+Reagendamento Rápido: Botão "Repetir último corte" no histórico.
+Melhorias Estratégicas Recomendadas
+Notificações via WhatsApp do Admin: O envio de lembretes e confirmações será feito através do número de WhatsApp do administrador. O link gerado abrirá uma conversa no WhatsApp do cliente iniciada pelo número do estabelecimento/admin.
+Gestão de Bloqueios (Admin): O dono precisa de um calendário facil para bloquear horários (almoço, médico) sem precisar criar um "agendamento fake".
+Política de Cancelamento (UX): Deixar claro no agendamento até quando ele pode cancelar.
+Dashboard Financeiro (Admin): Além de editar, o dono deveria ver quanto faturou no dia/semana (feature futura).
+Especificações Técnicas Refinadas
+Tech Stack
+Framework: Next.js (React)
+Estilização: Tailwind CSS (Recomendação Mudança: Vanilla CSS é bom, mas Tailwind acelera muito o desenvolvimento de interfaces responsivas e "bonitas" como solicitado). Manteremos Vanilla se preferir, mas Tailwind é padrão de mercado para velocidade.
+Estado: Context API.
+User Review Required
+TIP
+
+Recomendação Principal: Transformar a "Segunda Tela" (botões soltos) em um Fluxo Passo-a-Passo. Isso evita que o cliente escolha um horário sem escolher o serviço (que define a duração).
+
+IMPORTANT
+
+Aprova as melhorias acima (Login sem senha para clientes, Fluxo Linear)? Posso iniciar o projeto com essa estrutura?

@@ -1,0 +1,7 @@
+Acesso rápido do projeto:
+
+github: usuário: luizfelipefacisabh
+
+ servidor de desenvolvimento já está rodando! Você pode acessar as rotas navegando pelas opções na barra superior do aplicativo no navegador (em http://localhost:5173/).
+
+Revise o walkthrough.md para ver o resumo completo das tarefas. 
